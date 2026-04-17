@@ -1,0 +1,11 @@
+{
+    "filterOptions": {
+        "markdown-it": {
+            "linkify": true,
+            "html": true,
+            "plugins": [
+                "markdown-it-collapsible"
+            ]
+        }
+    }
+}

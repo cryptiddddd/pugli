@@ -1,0 +1,19 @@
+META:
+    siteTitle: "my demo website"
+    author: "cryptiddddd"
+    color: "#C65CFF"
+    tagLine: "learn how it works baby."
+
+ITEMS:
+    hobbylist:
+        - i love to sing
+        - i love to dance!
+        - if i get hungry i should have a snack!
+
+    colorlist:
+        - red
+        - blue
+        - green
+        - purple
+        - yellow
+        - green 2

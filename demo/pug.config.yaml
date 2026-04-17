@@ -1,0 +1,8 @@
+inDir: "./pages"
+outDir: "./www"
+
+# client: true
+
+compileCfg: "./data/compile-opts.json"
+data:
+    - "./data/vars.yaml"

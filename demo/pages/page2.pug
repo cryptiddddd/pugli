@@ -1,0 +1,10 @@
+extends ../includes/layout.pug
+
+include ../includes/module.pug
+
+block content
+    h3 colors
+    +list(ITEMS.colorlist)
+
+    h3 hobbies
+    +list(ITEMS.hobbylist)

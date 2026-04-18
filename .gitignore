@@ -20,6 +20,7 @@ pids
 cov-pt*
 coverage
 test/temp
+*.html
 
 # next.js
 .next/

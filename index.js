@@ -6,16 +6,17 @@ var fs = require("fs");
 var path = require("path");
 var { program } = require("commander");
 var mkdirp = require("mkdirp");
-var chalk = require("chalk");
+var chalk = require("chalk").default;
 var pug = require("pug");
 var yaml = require("js-yaml");
 var matter = require("gray-matter");
 
+// freeing up the name "path" for local variables
 var basename = path.basename;
 var dirname = path.dirname;
 var resolve = path.resolve;
 var normalize = path.normalize;
-var join = path.join;
+// var join = path.join;
 var relative = path.relative;
 var Debug = require("debug");
 
@@ -25,17 +26,16 @@ var debug = {
 	render: Debug("pug3:render"),
 };
 
-// options
 
+// options
 program
 	.version(
 		"pug version: " +
-			require("pug/package.json").version +
-			"\n" +
-			"@tokilabs/pug3-cli version: " +
-			require("./package.json").version
+		require("pug/package.json").version +
+		"\n" +
+		"@tokilabs/pug3-cli version: " +
+		require("./package.json").version
 	)
-	.usage("[options] [dir|file ...]")
 	.option("-O, --obj <str|path>", "JSON/JavaScript/YAML options object or file")
 	.option("-o, --out <dir>", "output the rendered HTML or compiled JavaScript to <dir>")
 	.option("-p, --path <path>", "filename used to resolve includes")
@@ -51,40 +51,44 @@ program
 		"--name-after-file",
 		"name the template after the last section of the file path (requires --client and overriden by --name)"
 	)
-	.option("--doctype <str>", "specify the doctype on the command line (useful if it is not specified by the template)");
+	.option("--doctype <str>", "specify the doctype on the command line (useful if it is not specified by the template)")
+	.argument("[path...]");
 
 program.on("--help", function () {
-	console.log("  Examples:");
-	console.log("");
-	console.log("    # Render all files in the `templates` directory:");
-	console.log("    $ pug3 templates");
-	console.log("");
-	console.log("    # Create {foo,bar}.html:");
-	console.log("    $ pug3 {foo,bar}.pug");
-	console.log("");
-	console.log("    # Using `pug` over standard input and output streams");
-	console.log("    $ pug3 < my.pug > my.html");
-	console.log("    $ echo 'h1 Pug!' | pug");
-	console.log("");
-	console.log("    # Render all files in `foo` and `bar` directories to `/tmp`:");
-	console.log("    $ pug3 foo bar --out /tmp");
-	console.log("");
-	console.log("    # Specify options through a string:");
-	console.log('    $ pug -O \'{"doctype": "html"}\' foo.pug');
-	console.log("    # or, using JavaScript instead of JSON");
-	console.log("    $ pug3 -O \"{doctype: 'html'}\" foo.pug");
-	console.log("");
-	console.log("    # Specify options through a file:");
-	console.log("    $ echo \"exports.doctype = 'html';\" > options.js");
-	console.log("    $ pug3 -O options.js foo.pug");
-	console.log("    # or, JSON works too");
-	console.log('    $ echo \'{"doctype": "html"}\' > options.json');
-	console.log("    $ pug3 -O options.json foo.pug");
-	console.log("");
+	// log usage examples.
+
+	console.log(`
+Examples:
+  # Render all files in the \`templates\` directory:
+  $ pug3 templates
+
+  # Create {foo,bar}.html:
+  $ pug3 {foo,bar}.pug
+
+  # Using \`pug3\` over standard input and output streams
+  $ pug3 < my.pug > my.html
+  $ echo 'h1 Pug!' | pug
+
+  # Render all files in \`foo\` and \`bar\` directories to \`/tmp\`:
+  $ pug3 foo bar --out /tmp
+
+  # Specify options through a string:
+  $ pug -O \'{"doctype": "html"}\' foo.pug');
+  # or, using JavaScript instead of JSON
+  $ pug3 -O \"{doctype: 'html'}\" foo.pug
+
+  # Specify options through a file:
+  $ echo \"exports.doctype = 'html';\" > options.js
+  $ pug3 -O options.js foo.pug
+  # or, JSON works too
+  $ echo \'{"doctype": "html"}\' > options.json
+  $ pug3 -O options.json foo.pug
+	`);
 });
 
 program.parse(process.argv);
 
+// this is where cli options are parsed -- if an "obj" is provided, this is where that is handled.
 var cmdOptions = program.opts();
 var pugOptions = cmdOptions.obj ? parseObj(cmdOptions.obj) : {};
 
@@ -131,6 +135,7 @@ function parseObj(input) {
 	}
 }
 
+// processing arguments manually...
 [
 	["path", "filename"], // --path
 	["debug", "compileDebug"], // --no-debug
@@ -139,7 +144,8 @@ function parseObj(input) {
 	["basedir", "basedir"], // --basedir
 	["doctype", "doctype"], // --doctype
 ].forEach(function (o) {
-	pugOptions[o[1]] = cmdOptions[o[0]] !== undefined ? cmdOptions[o[0]] : pugOptions[o[1]];
+	if (cmdOptions[o[0]] !== undefined)
+		pugOptions[o[1]] = cmdOptions[o[0]];
 });
 
 // --name
@@ -150,9 +156,9 @@ if (typeof cmdOptions.name === "string") {
 
 // --silent
 
-var consoleLog = cmdOptions.silent ? function () {} : console.log;
+var consoleLog = cmdOptions.silent ? function () { } : console.log;
 
-// left-over args are file paths
+// args are file paths
 
 var files = program.args;
 
@@ -290,7 +296,6 @@ function stdin() {
  * @param path      path of the file, might be relative
  * @param rootPath  path relative to the directory specified in the command
  */
-
 function renderFile(path, rootPath) {
 	var isPug = /\.(?:pug|jade)$/;
 	var isIgnored = /([\/\\]_)|(^_)/;
@@ -308,8 +313,7 @@ function renderFile(path, rootPath) {
 		let page = matter.read(path);
 		pugOptions.filename = page.path;
 		if (page.data.layout) {
-			page.extended = `extends ${pugOptions.includes}/${page.data.layout}
-    ${page.content}`;
+			page.extended = `extends ${pugOptions.includes}/${page.data.layout}\n\t${page.content}`;
 		} else {
 			page.extended = page.content;
 		}
@@ -367,10 +371,10 @@ function renderFile(path, rootPath) {
 }
 
 /**
- * Get a sensible name for a template function from a file path
+ * Get a sensible  name for a template function from a file path
  *
  * @param {String} filename
- * @returns {String}
+ * @returns {String} `filename` in camel case.
  */
 function getNameFromFileName(filename) {
 	var file = basename(filename).replace(/\.(?:pug|jade)$/, "");

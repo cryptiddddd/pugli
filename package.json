@@ -1,6 +1,7 @@
 {
-	"name": "@tokilabs/pug3-cli",
-	"version": "3.0.1",
+	"name": "pugli",
+	"version": "0.0.1",
+    "type": "module",
 	"publishConfig": {
 		"access": "public",
 		"registry": "https://registry.npmjs.org/"
@@ -14,7 +15,8 @@
 		"man": "man"
 	},
 	"bin": {
-		"pug3": "./index.js"
+		"pug3": "./index.js",
+		"pugli": "./dist/index.js"
 	},
 	"preferGlobal": true,
 	"keywords": [
@@ -26,25 +28,40 @@
 		"cli"
 	],
 	"dependencies": {
-		"chalk": "^4.1.1",
-		"commander": "^7.2.0",
-		"debug": "^4.3.4",
-		"gray-matter": "^4.0.2",
-		"js-yaml": "^4.1.0",
-		"mkdirp": "^1.0.4",
-		"pug": "^3.0.2"
+		"chalk": "^5.6.2",
+		"commander": "^14.0.3",
+		"debug": "^4.4.3",
+		"gray-matter": "^4.0.3",
+		"js-yaml": "^4.1.1",
+		"mkdirp": "^3.0.1",
+		"pug": "^3.0.4"
 	},
 	"devDependencies": {
+		"@types/debug": "^4.1.13",
+		"@types/js-yaml": "^4.0.9",
+		"@types/mkdirp": "^1.0.2",
+		"@types/node": "^25.5.2",
+		"@types/pug": "^2.0.10",
 		"istanbul": "*",
 		"mocha": "*",
-		"rimraf": "*"
+		"rimraf": "*",
+		"ts-node": "^10.9.2",
+		"typescript": "^6.0.2",
+		"vitest": "^4.1.4"
 	},
 	"scripts": {
 		"test": "mocha -R spec --bail",
 		"precoverage": "rimraf coverage && rimraf cov-pt*",
 		"coverage": "istanbul cover --report none --dir cov-pt0 node_modules/mocha/bin/_mocha -- -R dot",
 		"postcoverage": "istanbul report --include cov-pt\\*/coverage.json && rimraf cov-pt*",
-		"man": "man ./man/pug3.0.2"
+		"man": "man ./man/pug3.0.2",
+		"build": "npx tsc",
+		"demo": "npx ts-node ./src/index.ts --out ./www -O demo/data/vars.yaml -C demo/data/compile-opts.json -- demo/pages"
 	},
-	"license": "MIT"
+	"license": "MIT",
+	"optionalDependencies": {
+		"jstransformer-markdown-it": "^3.0.0",
+		"markdown-it": "^14.1.1",
+		"markdown-it-collapsible": "^2.0.2"
+	}
 }

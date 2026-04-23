@@ -116,14 +116,14 @@ describe("isFile() checks", () => {
 describe("async walkDir() checks", () => {
     const testDir = join(__dirname, "../demo");
 
-    test("full-depth check", async () => {
+    test("full-depth check",  () => {
 
-        for await (let path of utils.walkDir(testDir))
+        for (let path of utils.walkDir(testDir))
             expect(utils.isFile(path)).toBe(true);
     });
 
-    test("restricted levels", async () => {
-        const result = await Array.fromAsync(
+    test("restricted levels",  () => {
+        const result = Array.from(
             utils.walkDir(testDir, { depth: 1 })
         );
 
@@ -132,8 +132,8 @@ describe("async walkDir() checks", () => {
         expect(result, "result should be a config file").toContain(join(testDir, "pug.config.yaml"));
     });
 
-    test("pattern matching", async () => {
-        const result = await Array.fromAsync(
+    test("pattern matching",  () => {
+        const result = Array.from(
             utils.walkDir(testDir, { mustMatch: /data/ })
         );
 
@@ -145,8 +145,8 @@ describe("async walkDir() checks", () => {
         };
     });
 
-    test("exclusions", async () => {
-        const result = await Array.fromAsync(
+    test("exclusions",  () => {
+        const result = Array.fromAsync(
             utils.walkDir(testDir, { exclude: [/page/] })
         );
 

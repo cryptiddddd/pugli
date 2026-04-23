@@ -1,6 +1,45 @@
-import { statSync, write } from "node:fs";
-import { readdir, writeFile } from "node:fs/promises";
+import { statSync, write, readdirSync } from "node:fs";
+import { writeFile } from "node:fs/promises";
 import { resolve, join } from "node:path";
+
+
+let UNNAMED_CTR = 0;
+
+
+// /////////////// HELPERS
+type PullMatchFunc = (path: string) => string | undefined;
+
+function pullMatch(pattern: RegExp, idx: number, backup?: string):  PullMatchFunc {
+    return (path: string) => {
+        const match = path.match(pattern);
+        if (!match) return backup;
+        return match[idx];
+    };
+}
+
+
+/**
+ * generates a name for a file without a parsible name.
+ * @returns "unnamed-" + current counter (starting at 0)
+ */
+export function getUnnamed(): string {
+    UNNAMED_CTR ++;
+    return `unnamed-${UNNAMED_CTR - 1}`;
+}
+
+/**
+ * extracts an alphanumeric name for the given file. includes characters a-z, 0-9, -_ (hyphen and underscore), and spaces. case insensitive.
+ * @param path filepath to reference.
+ * @returns the name of the file, free of absolute path + extension.
+ */
+export const pullFileName = pullMatch(/\/([A-Za-z0-9-_ ]+)\.[a-z]+$/, 1, undefined);
+
+/**
+ * extracts the final file extention of the given path.
+ * @param path filepath to reference.
+ * @returns the extension of the file, free of all else + prefix period.
+ */
+export const pullFileExt = pullMatch(/\/.*\.([a-z]+)$/, 1, "");
 
 
 /**
@@ -36,9 +75,9 @@ export function isFile(path: string): boolean {
  * asynchronous iteratable, runs through the given directory recursively and yields only file names.
  * @param dir directory to walk through
  */
-export async function* walkDir(dir: string, cfg: WalkCfg = {}): AsyncIterable<string> {
+export function* walkDir(dir: string, cfg: WalkCfg = {}): Iterable<string> {
     // iterate through all children.
-    for (const sub of await readdir(dir, { withFileTypes: true })) {
+    for (const sub of readdirSync(dir, { withFileTypes: true })) {
         const res = resolve(dir, sub.name);
 
         // exclusion

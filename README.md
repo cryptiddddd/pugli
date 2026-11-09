@@ -34,7 +34,8 @@ input is taken from standard input and output to standard output.
 -s, --silent           do not output logs
 --name-after-file      name the template after the last section of the file
                        path (requires --client and overriden by --name)
---doctype <str>        specify the doctype on the command line (useful if it
+-e, --export-default   exports the template from a JavaSCript file (requires --client)
+--doctype <str>        specify the doctype on the command line (useful if ittemplate
                        is not specified by the template)
 ```
 

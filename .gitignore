@@ -27,6 +27,8 @@ test/temp
 # misc
 .DS_Store
 *.pem
+*.html
+test/dependencies/*.js
 
 # debug
 .pnpm-debug.log*

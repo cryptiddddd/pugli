@@ -51,6 +51,7 @@ program
 		"--name-after-file",
 		"name the template after the last section of the file path (requires --client and overriden by --name)"
 	)
+	.option("-e, --export-default", "exports the template from a JavaScript file (requires --client)")
 	.option("--doctype <str>", "specify the doctype on the command line (useful if it is not specified by the template)");
 
 program.on("--help", function () {
@@ -135,6 +136,7 @@ function parseObj(input) {
 	["path", "filename"], // --path
 	["debug", "compileDebug"], // --no-debug
 	["client", "client"], // --client
+	["export-default", "export"], // --export-default
 	["pretty", "pretty"], // --pretty
 	["basedir", "basedir"], // --basedir
 	["doctype", "doctype"], // --doctype
@@ -350,7 +352,7 @@ function renderFile(path, rootPath) {
 		}
 		var dir = resolve(dirname(path));
 		mkdirp.sync(dir);
-		var output = pugOptions.client ? fn : fn(pugOptions);
+		var output = pugOptions.client ? fn + (pugOptions.export? "export default " + (pugOptions.name || "template") + ";" : "") : fn(pugOptions);
 		fs.writeFileSync(path, output);
 		consoleLog("  " + chalk.gray("rendered") + " " + chalk.cyan("%s"), normalize(path));
 		// Found directory

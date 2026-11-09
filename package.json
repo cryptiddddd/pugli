@@ -1,14 +1,10 @@
 {
-	"name": "@tokilabs/pug3-cli",
-	"version": "3.0.1",
-	"publishConfig": {
-		"access": "public",
-		"registry": "https://registry.npmjs.org/"
-	},
+	"name": "pugli",
+	"version": "1.0",
 	"description": "A cli for Pug 3.0.2 with many fixes and improvements",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/tokilabs/pug3-cli.git"
+		"url": "https://github.com/cryptiddddd/pugli.git"
 	},
 	"directories": {
 		"man": "man"

@@ -136,7 +136,7 @@ function parseObj(input) {
 	["path", "filename"], // --path
 	["debug", "compileDebug"], // --no-debug
 	["client", "client"], // --client
-	["export-default", "export"], // --export-default
+	["exportDefault", "export"], // --export-default
 	["pretty", "pretty"], // --pretty
 	["basedir", "basedir"], // --basedir
 	["doctype", "doctype"], // --doctype
